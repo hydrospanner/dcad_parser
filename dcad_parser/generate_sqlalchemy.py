@@ -1,13 +1,23 @@
+import argparse
 import sys
+
 from sqlalchemy import Table, MetaData
 from sqlacodegen.codegen import CodeGenerator
 
-from .table_parser import DcadTablesParser
+from dcad_parser.table_parser import DcadTablesParser
 
 
-f_path = '/home/jt/Downloads/DCAD/DCAD2020_CURRENT/TABLES AND FIELD NAMES.TXT'
-parser = DcadTablesParser(f_path)
+parser = argparse.ArgumentParser(description='Generates SQLAlchemy model code from DCAD data dictionary.')
+parser.add_argument('input_path', nargs='?', help='DCAD data dictionary file')
+parser.add_argument('--outfile', help='file to write output to (default: stdout)')
+args = parser.parse_args()
 
-outfile = sys.stdout
+
+with open(args.input_path, encoding='ISO-8859-1') as tbl_file:
+    parser = DcadTablesParser(tbl_file)
 generator = CodeGenerator(parser.metadata, noconstraints=True, flask=True)
-generator.render(outfile)
+if args.outfile:
+    with open(args.outfile, 'w') as outfile:
+        generator.render(outfile)
+else:
+    generator.render(sys.stdout)

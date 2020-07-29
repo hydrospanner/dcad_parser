@@ -15,7 +15,7 @@ class DcadTablesParser:
     """DCAD Table and fields parser.
 
     Args:
-        file_ref (file-like object, str):
+        tbl_file (file-like object):
             file to parse to get table and field data.
     """
     # column name suffixes indicating data type
@@ -23,27 +23,27 @@ class DcadTablesParser:
     INT_SUFFIX = {'YR', 'VAL', 'NUM', 'SF', 'ID'}
     FLOAT_SUFFIX = {'PCT', 'MKT', 'TAXABLE', 'AREA'}
     DATE_SUFFIX = {'DT'}
+    PK_COLS = {'APPRAISAL_YR', 'ACCOUNT_NUM', 'EXEMPTION_CD',
+               'OWNER_SEQ_NUM', 'SECTION_NUM'}
 
-    def __init__(self, file_ref):
+    def __init__(self, tbl_file):
         self.metadata = MetaData()
-        if file_ref is not None:
-            self.read(file_ref)
+        self.read(tbl_file)
 
-    def read(self, file_ref):
+    def read(self, tbl_file):
         keep_chars = set(string.printable)
         keep_chars.remove('\n')
         keep_chars.remove('\t')
         self.current_tbl = None
-        with open(file_ref, 'r', encoding='ISO-8859-1') as tbl_file:
-            for line in tbl_file:
-                line = ''.join([c for c in line if c in keep_chars])
-                line = line.strip()
-                if line.startswith('TABLE '):
-                    self._add_table(line)
-                elif not line:
-                    pass
-                else:
-                    self._add_column(line)
+        for line in tbl_file:
+            line = ''.join([c for c in line if c in keep_chars])
+            line = line.strip()
+            if line.startswith('TABLE '):
+                self._add_table(line)
+            elif line:
+                self._add_column(line)
+            else:
+                continue
 
     def _get_bracket_text(self, text):
         bracket_text = re.search(r'\[.*?\]', text)
@@ -61,9 +61,7 @@ class DcadTablesParser:
 
     def get_line_description(self, line):
         """Get the text after the last tab."""
-        end_bracket = line.find(']')
-        after_bracket = line[end_bracket + 1:]
-        return after_bracket.strip()
+        return line.split(']')[-1].strip()
 
     def guess_type(self, col_name, delimiter='_'):
         """Guess column type from column name."""
@@ -83,7 +81,9 @@ class DcadTablesParser:
 
     def _add_column(self, line):
         """Parse column data."""
-        col_name = self._get_bracket_text(line).lower()
-        col = Column(col_name, self.guess_type(col_name),
+        col_name = self._get_bracket_text(line)
+        pk = col_name in self.PK_COLS
+        col = Column(col_name.lower(), self.guess_type(col_name),
+                     primary_key=pk,
                      comment=self.get_line_description(line))
         self.current_tbl.append_column(col)
