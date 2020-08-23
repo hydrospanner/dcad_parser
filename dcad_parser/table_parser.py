@@ -20,8 +20,8 @@ class DcadTablesParser:
     """
     # column name suffixes indicating data type
     BOOL_SUFFIX = {'IND'}
-    INT_SUFFIX = {'YR', 'VAL', 'NUM', 'SF', 'ID'}
-    FLOAT_SUFFIX = {'PCT', 'MKT', 'TAXABLE', 'AREA'}
+    INT_SUFFIX = {'YR', 'NUM', 'SF', 'ID'}
+    FLOAT_SUFFIX = {'PCT', 'MKT', 'TAXABLE', 'AREA', 'AMT', 'VAL'}
     DATE_SUFFIX = {'DT'}
     PK_COLS = {'APPRAISAL_YR', 'ACCOUNT_NUM', 'EXEMPTION_CD',
                'OWNER_SEQ_NUM', 'SECTION_NUM'}

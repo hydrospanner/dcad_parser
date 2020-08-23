@@ -10,7 +10,7 @@ setup(name='directory_to_sql',
       long_description=long_description,
       url='http://github.com/hydrospanner/dcad_parser',
       author='John Tucker',
-    classifiers=[
+      classifiers=[
         'Development Status :: 3 - Alpha',
         'Intended Audience :: Developers',
         'License :: OSI Approved :: MIT License',
@@ -20,18 +20,15 @@ setup(name='directory_to_sql',
         'Programming Language :: Python',
         'Programming Language :: Python :: 3',
         'Programming Language :: Python :: 3.7'
-    ],
+      ],
       license='MIT',
       packages=['dcad_parser'],
       install_requires=[
             'flask-sqlacodegen',
       ],
-      zip_safe=False,
       entry_points={
           'console_scripts': [
               'generate_sqlalchemy=dcad_parser.generate_sqlalchemy:main',
           ]
       },
-      test_suite='nose.collector',
-      tests_require=['nose'],
       )
