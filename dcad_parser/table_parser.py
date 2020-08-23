@@ -25,6 +25,7 @@ class DcadTablesParser:
     DATE_SUFFIX = {'DT'}
     PK_COLS = {'APPRAISAL_YR', 'ACCOUNT_NUM', 'EXEMPTION_CD',
                'OWNER_SEQ_NUM', 'SECTION_NUM'}
+    TABLE_STARTSWITH = 'TABLE '
 
     def __init__(self, tbl_file):
         self.metadata = MetaData()
@@ -32,13 +33,13 @@ class DcadTablesParser:
 
     def read(self, tbl_file):
         keep_chars = set(string.printable)
-        keep_chars.remove('\n')
-        keep_chars.remove('\t')
+        for char in '\n\t':
+            keep_chars.remove(char)
         self.current_tbl = None
         for line in tbl_file:
             line = ''.join([c for c in line if c in keep_chars])
             line = line.strip()
-            if line.startswith('TABLE '):
+            if line.startswith(self.TABLE_STARTSWITH):
                 self._add_table(line)
             elif line:
                 self._add_column(line)
