@@ -5,7 +5,7 @@ import sys
 from sqlalchemy import Table, MetaData
 from sqlacodegen.codegen import CodeGenerator
 
-from dcad_parser.table_parser import DcadTablesParser
+from dcad_parser.parser.metadata_parser import DcadTablesParser
 
 
 def main():

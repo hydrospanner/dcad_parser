@@ -19,12 +19,13 @@ setup(name='directory_to_sql',
         'Topic :: Software Development :: Code Generators',
         'Programming Language :: Python',
         'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.7'
+        'Programming Language :: Python :: 3.7',
       ],
       license='MIT',
       packages=['dcad_parser'],
       install_requires=[
             'flask-sqlacodegen',
+            'cerberus',
       ],
       entry_points={
           'console_scripts': [

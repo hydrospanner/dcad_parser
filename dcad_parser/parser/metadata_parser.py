@@ -5,10 +5,84 @@ File is contains non-UTF-8 characters and has inconsistant syntax between lines.
 import os
 import re
 import string
+from datetime import datetime
 
 from sqlacodegen.codegen import CodeGenerator
 from sqlalchemy import (BOOLEAN, FLOAT, INTEGER, TEXT, DATE, Column, Table,
                         MetaData)
+
+
+class FieldType:
+    """Base class for field data type data."""
+
+    coerce_func = None
+
+    def __init__(self):
+        pass
+
+    @property
+    def cerberus_schema(self):
+        schema = {'type': self.cerberus_type}
+        if self.coerce_func:
+            schema['coerce'] = self.coerce_func
+        return schema
+
+
+class BoolField(FieldType):
+
+    sqlalchemy_type = BOOLEAN
+    cerberus_type = 'boolean'
+
+    def coerce_func(self, yn_str):
+        """Coerce yes/No to boolean."""
+        yn = un_str.upper()
+        if yn == 'Y':
+            return True
+        elif yn == 'N':
+            return False
+
+
+class DateField(FieldType):
+
+    sqlalchemy_type = DATE
+    cerberus_type = 'datetime'
+
+    def coerce_func(self, dt_str):
+        if dt_str:
+            return datetime.strptime(dt_str, '%Y/%m/%d')
+
+class FieldName:
+    """Parse field schema from field name."""
+
+    # column name suffixes indicating data type
+    BOOL_SUFFIX = {'IND'}
+    INT_SUFFIX = {'YR', 'NUM', 'SF', 'ID'}
+    FLOAT_SUFFIX = {'PCT', 'MKT', 'TAXABLE', 'AREA', 'AMT', 'VAL'}
+    DATE_SUFFIX = {'DT'}
+    PK_COLS = {'APPRAISAL_YR', 'ACCOUNT_NUM', 'EXEMPTION_CD',
+               'OWNER_SEQ_NUM', 'SECTION_NUM'}
+    DELIMITER = '_'
+
+    def __init__(self, name):
+        self.name = name
+        self.sqlalchemy_type = self.guess_type()
+        self.pk = name in self.PK_COLS
+
+    def guess_type(self):
+        """Guess column type from column name."""
+        name_parts = self.name.upper().split(self.DELIMITER)
+        suffix = name_parts[-1]
+        prefix = name_parts[0]
+        if suffix in self.BOOL_SUFFIX:
+            return BOOLEAN
+        elif any(part in self.INT_SUFFIX for part in name_parts):
+            return INTEGER
+        elif any(part in self.FLOAT_SUFFIX for part in name_parts):
+            return FLOAT
+        elif suffix in self.DATE_SUFFIX:
+            return DATE
+        else:
+            return TEXT
 
 
 class DcadTablesParser:
@@ -18,13 +92,6 @@ class DcadTablesParser:
         tbl_file (file-like object):
             file to parse to get table and field data.
     """
-    # column name suffixes indicating data type
-    BOOL_SUFFIX = {'IND'}
-    INT_SUFFIX = {'YR', 'NUM', 'SF', 'ID'}
-    FLOAT_SUFFIX = {'PCT', 'MKT', 'TAXABLE', 'AREA', 'AMT', 'VAL'}
-    DATE_SUFFIX = {'DT'}
-    PK_COLS = {'APPRAISAL_YR', 'ACCOUNT_NUM', 'EXEMPTION_CD',
-               'OWNER_SEQ_NUM', 'SECTION_NUM'}
     TABLE_STARTSWITH = 'TABLE '
 
     def __init__(self, tbl_file):
@@ -64,27 +131,11 @@ class DcadTablesParser:
         """Get the text after the last tab."""
         return line.split(']')[-1].strip()
 
-    def guess_type(self, col_name, delimiter='_'):
-        """Guess column type from column name."""
-        name_parts = col_name.upper().split(delimiter)
-        suffix = name_parts[-1]
-        prefix = name_parts[0]
-        if suffix in self.BOOL_SUFFIX:
-            return BOOLEAN
-        elif any(part in self.INT_SUFFIX for part in name_parts):
-            return INTEGER
-        elif any(part in self.FLOAT_SUFFIX for part in name_parts):
-            return FLOAT
-        elif suffix in self.DATE_SUFFIX:
-            return DATE
-        else:
-            return TEXT
-
     def _add_column(self, line):
         """Parse column data."""
         col_name = self._get_bracket_text(line)
-        pk = col_name in self.PK_COLS
-        col = Column(col_name.lower(), self.guess_type(col_name),
-                     primary_key=pk,
+        field = FieldName(col_name)
+        col = Column(col_name.lower(), field.sqlalchemy_type,
+                     primary_key=field.pk,
                      comment=self.get_line_description(line))
         self.current_tbl.append_column(col)
