@@ -4,7 +4,8 @@ import csv
 
 from cerberus import Validator
 
-from .metadata_parser import FieldName
+# from .metadata_parser import FieldName
+from ..fields import FieldName
 
 
 class TableParser:
@@ -39,6 +40,6 @@ class TableParser:
             validated = validator.validated(row)
             if validated:
                 # replace normalized data
-                pass
+                row.update(validated)
             else:
                 self.errors[row['line_num']] = validator.errors
