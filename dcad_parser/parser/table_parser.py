@@ -4,6 +4,8 @@ import csv
 
 from cerberus import Validator
 
+from .metadata_parser import FieldName
+
 
 class TableParser:
     """Parse the csv files of table data."""
@@ -28,4 +30,15 @@ class TableParser:
     def validate(self):
         # Use the field names to determine the correct schema to validate against
         # create schema from row keys(blank if rows are missing)
-        pass
+        if not self.rows:
+            return
+        row_schema = {field: FieldName(field).schema for
+                      field in self.rows[0].keys()}
+        validator = Validator(row_schema)
+        for row in self.rows:
+            validated = validator.validated(row)
+            if validated:
+                # replace normalized data
+                pass
+            else:
+                self.errors[row['line_num']] = validator.errors
