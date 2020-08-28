@@ -42,6 +42,24 @@ class BoolField(FieldType):
             return False
 
 
+class StrField(FieldType):
+
+    sqlalchemy_type = TEXT
+    cerberus_type = 'string'
+
+
+class IntField(FieldType):
+
+    sqlalchemy_type = INTEGER
+    cerberus_type = 'integer'
+
+
+class FloatField(FieldType):
+
+    sqlalchemy_type = FLOAT
+    cerberus_type = 'float'
+
+
 class DateField(FieldType):
 
     sqlalchemy_type = DATE
@@ -50,6 +68,7 @@ class DateField(FieldType):
     def coerce_func(self, dt_str):
         if dt_str:
             return datetime.strptime(dt_str, '%Y/%m/%d')
+
 
 class FieldName:
     """Parse field schema from field name."""
@@ -65,8 +84,11 @@ class FieldName:
 
     def __init__(self, name):
         self.name = name
-        self.sqlalchemy_type = self.guess_type()
+        self.type = self.guess_type()
         self.pk = name in self.PK_COLS
+        self.nullable = self.type.cerberus_type != 'string' and not self.pk
+        self.schema = self.type.cerberus_schema
+        self.schema['nullable'] = self.nullable
 
     def guess_type(self):
         """Guess column type from column name."""
@@ -74,15 +96,15 @@ class FieldName:
         suffix = name_parts[-1]
         prefix = name_parts[0]
         if suffix in self.BOOL_SUFFIX:
-            return BOOLEAN
+            return BoolField()
         elif any(part in self.INT_SUFFIX for part in name_parts):
-            return INTEGER
+            return IntField()
         elif any(part in self.FLOAT_SUFFIX for part in name_parts):
-            return FLOAT
+            return FloatField()
         elif suffix in self.DATE_SUFFIX:
-            return DATE
+            return DateField()
         else:
-            return TEXT
+            return StrField()
 
 
 class DcadTablesParser:
@@ -135,7 +157,7 @@ class DcadTablesParser:
         """Parse column data."""
         col_name = self._get_bracket_text(line)
         field = FieldName(col_name)
-        col = Column(col_name.lower(), field.sqlalchemy_type,
+        col = Column(col_name.lower(), field.type.sqlalchemy_type,
                      primary_key=field.pk,
                      comment=self.get_line_description(line))
         self.current_tbl.append_column(col)
