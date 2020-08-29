@@ -1,6 +1,16 @@
 Dallas Central Appraisal District Parser
 ========================================
 
+This repo provides tools for fast DB integration of data from the
+Dallas Central Appraisal District (DCAD). This includes
+
+- A CLI to generate SQLAlchemy models
+  by parsing a data dictionary and ``flask-sqlacodegen``.
+- A parser for DCAD's table exports for parsing, coersion, and validation.
+
+
+Data Model CLI
+--------------
 Parse the Dallas Central Appraisal District (DCAD) data dictionary into
 `sqlalchemy` metadata. Use the generated metadata to generate
 Flask-SQLAlchemy model code, using ``flask-sqlacodegen``.
@@ -38,3 +48,10 @@ Example (using the entery point)::
 To see the full list of options::
 
     generate_sqlalchemy --help
+
+
+Table Parser
+------------
+This parser functions as a dictionary parser for the invidual table exports.
+It also coerces and validates the data.
+It uses the same naming convention logic to identify field types as the Data Model process.
