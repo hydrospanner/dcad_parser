@@ -21,10 +21,9 @@ class TableParserTests(unittest.TestCase):
                 [1, 2019, 99],
                 ]
         csv_file = self.create_csv(header, data)
-        parser = TableParser(csv_file)
+        parser = TableParser(csv_file, store_rows=True)
         parser.parse()
         self.assertTrue(parser.rows)
-        parser.validate()
         self.assertFalse(parser.errors)
         for expected, parsed in zip(data, parser.rows):
             for expected_val, col in zip(expected, header):
@@ -34,9 +33,8 @@ class TableParserTests(unittest.TestCase):
         header = ['txt_field', 'val']
         data = [['', '']]
         csv_file = self.create_csv(header, data)
-        parser = TableParser(csv_file)
+        parser = TableParser(csv_file, store_rows=True)
         parser.parse()
-        parser.validate()
         self.assertTrue(parser.rows)
         self.assertFalse(parser.errors)
         parsed = parser.rows[0]

@@ -10,36 +10,48 @@ from ..fields import FieldName
 class TableParser:
     """Parse the csv files of table data."""
 
-    def __init__(self, parse_file):
+    def __init__(self, parse_file, store_rows=False):
         """Initalize parser.
 
         Args:
             parse_file (file-like object):
                 File to parse
+
+        Kwargs:
+            store_rows (bool):
+                Add the parsed rows to self.rows
         """
         self.parse_file = parse_file
-        self.rows = []
+        self.validator = None
         self.errors = {}
+        self.store_rows = store_rows
+        if store_rows:
+            self.rows = []
 
-    def parse(self):
+    def readlines(self):
+        """Generae each row of data."""
         reader = csv.DictReader(self.parse_file)
-        self.row_schema = {}
         for row in reader:
             row['line_num'] = reader.line_num
-            self.rows.append(row)
+            if reader.line_num % 4000 == 0:
+                break
+            self.validate_row(row)
+            yield row
 
-    def validate(self):
-        # Use the field names to determine the correct schema to validate against
-        # create schema from row keys(blank if rows are missing)
-        if not self.rows:
-            return
-        row_schema = {field: FieldName(field).schema for
-                      field in self.rows[0].keys()}
-        validator = Validator(row_schema)
-        for row in self.rows:
-            validated = validator.validated(row)
-            if validated:
-                # replace normalized data
-                row.update(validated)
-            else:
-                self.errors[row['line_num']] = validator.errors
+    def parse(self):
+        for row in self.readlines():
+            if self.store_rows:
+                self.rows.append(row)
+
+    def validate_row(self, row):
+        if self.validator is None:
+            # Use the field names to determine the correct validation schema
+            self.row_schema = {field: FieldName(field).schema for
+                               field in row.keys()}
+            self.validator = Validator(self.row_schema)
+        validated = self.validator.validated(row)
+        if validated:
+            # replace normalized data
+            row.update(validated)
+        else:
+            self.errors[row['line_num']] = self.validator.errors

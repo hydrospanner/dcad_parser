@@ -81,7 +81,7 @@ class FieldName:
                'OWNER_SEQ_NUM', 'SECTION_NUM', 'TAX_OBJ_ID'}
     # Exceptions to suffix conventions
     str_fields = {'ACCOUNT_NUM', 'GIS_PARCEL_ID', 'BLDG_ID', 'UNIT_ID',
-                  'TAX_OBJ_ID'}
+                  'TAX_OBJ_ID', 'NUM_STORIES_DESC'}
     DELIMITER = '_'
 
     def __init__(self, name):
