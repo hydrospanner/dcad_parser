@@ -4,7 +4,6 @@ import csv
 
 from cerberus import Validator
 
-# from .metadata_parser import FieldName
 from ..fields import FieldName
 
 
@@ -24,6 +23,7 @@ class TableParser:
 
     def parse(self):
         reader = csv.DictReader(self.parse_file)
+        self.row_schema = {}
         for row in reader:
             row['line_num'] = reader.line_num
             self.rows.append(row)

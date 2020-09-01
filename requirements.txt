@@ -1,3 +1,4 @@
 flask-sqlacodegen
 cerberus
+pytest
 tox

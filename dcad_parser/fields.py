@@ -10,6 +10,12 @@ class FieldType:
     def __init__(self):
         pass
 
+    def coerce_func(self, val):
+        if val is '':
+            return None
+        return self.coerce_to(val)
+
+
     @property
     def cerberus_schema(self):
         schema = {'type': self.cerberus_type}
@@ -25,7 +31,7 @@ class BoolField(FieldType):
 
     def coerce_func(self, yn_str):
         """Coerce yes/No to boolean."""
-        yn = un_str.upper()
+        yn = yn_str.upper()
         if yn == 'Y':
             return True
         elif yn == 'N':
@@ -36,20 +42,21 @@ class StrField(FieldType):
 
     sqlalchemy_type = TEXT
     cerberus_type = 'string'
+    coerce_func = str
 
 
 class IntField(FieldType):
 
     sqlalchemy_type = INTEGER
     cerberus_type = 'integer'
-    coerce_func = int
+    coerce_to = int
 
 
 class FloatField(FieldType):
 
     sqlalchemy_type = FLOAT
     cerberus_type = 'float'
-    coerce_func = float
+    coerce_to = float
 
 
 class DateField(FieldType):
@@ -67,11 +74,14 @@ class FieldName:
 
     # column name suffixes indicating data type
     BOOL_SUFFIX = {'IND'}
-    INT_SUFFIX = {'YR', 'NUM', 'SF', 'ID'}
+    INT_SUFFIX = {'YR', 'NUM', 'SF', 'ID', 'DIM'}
     FLOAT_SUFFIX = {'PCT', 'MKT', 'TAXABLE', 'AREA', 'AMT', 'VAL'}
     DATE_SUFFIX = {'DT'}
     PK_COLS = {'APPRAISAL_YR', 'ACCOUNT_NUM', 'EXEMPTION_CD',
-               'OWNER_SEQ_NUM', 'SECTION_NUM'}
+               'OWNER_SEQ_NUM', 'SECTION_NUM', 'TAX_OBJ_ID'}
+    # Exceptions to suffix conventions
+    str_fields = {'ACCOUNT_NUM', 'GIS_PARCEL_ID', 'BLDG_ID', 'UNIT_ID',
+                  'TAX_OBJ_ID'}
     DELIMITER = '_'
 
     def __init__(self, name):
@@ -92,11 +102,13 @@ class FieldName:
         name_parts = self.name.upper().split(self.DELIMITER)
         suffix = name_parts[-1]
         prefix = name_parts[0]
+        if self.name.upper() in self.str_fields:
+            return StrField()
         if suffix in self.BOOL_SUFFIX:
             return BoolField()
-        elif any(part in self.INT_SUFFIX for part in name_parts):
+        elif suffix in self.INT_SUFFIX or prefix in self.INT_SUFFIX:
             return IntField()
-        elif any(part in self.FLOAT_SUFFIX for part in name_parts):
+        elif suffix in self.FLOAT_SUFFIX:
             return FloatField()
         elif suffix in self.DATE_SUFFIX:
             return DateField()

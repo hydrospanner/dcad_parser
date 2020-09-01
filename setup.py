@@ -5,7 +5,7 @@ with open('README.rst', 'r') as file:
     long_description = file.read()
 
 setup(name='directory_to_sql',
-      version='0.1.2',
+      version='0.1.0',
       description='Parse Dallas Central Appriasal District Dataset',
       long_description=long_description,
       url='http://github.com/hydrospanner/dcad_parser',
