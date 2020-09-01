@@ -15,7 +15,7 @@ class TableParserTests(unittest.TestCase):
         csv_file.seek(0)
         return csv_file
 
-    def test__validate_valid_numeric(self):
+    def test_validate_valid_numeric(self):
         header = ['act_num', 'tax_yr', 'home_val']
         data = [[1, 2020, 100],
                 [1, 2019, 99],
@@ -29,3 +29,16 @@ class TableParserTests(unittest.TestCase):
         for expected, parsed in zip(data, parser.rows):
             for expected_val, col in zip(expected, header):
                 self.assertEqual(parsed[col], expected_val)
+
+    def test_null_coercion(self):
+        header = ['txt_field', 'val']
+        data = [['', '']]
+        csv_file = self.create_csv(header, data)
+        parser = TableParser(csv_file)
+        parser.parse()
+        parser.validate()
+        self.assertTrue(parser.rows)
+        self.assertFalse(parser.errors)
+        parsed = parser.rows[0]
+        self.assertEqual(parsed['txt_field'], '')
+        self.assertIsNone(parsed['val'])
