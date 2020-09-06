@@ -74,21 +74,22 @@ class FieldName:
 
     # column name suffixes indicating data type
     BOOL_SUFFIX = {'IND'}
-    INT_SUFFIX = {'YR', 'NUM', 'SF', 'ID', 'DIM'}
+    INT_SUFFIX = {'YR', 'NUM', 'SF', 'ID', 'DIM', 'AGE'}
     FLOAT_SUFFIX = {'PCT', 'MKT', 'TAXABLE', 'AREA', 'AMT', 'VAL'}
     DATE_SUFFIX = {'DT'}
     PK_COLS = {'APPRAISAL_YR', 'ACCOUNT_NUM', 'EXEMPTION_CD',
                'OWNER_SEQ_NUM', 'SECTION_NUM', 'TAX_OBJ_ID'}
     # Exceptions to suffix conventions
     str_fields = {'ACCOUNT_NUM', 'GIS_PARCEL_ID', 'BLDG_ID', 'UNIT_ID',
-                  'TAX_OBJ_ID', 'NUM_STORIES_DESC'}
+                  'TAX_OBJ_ID', 'NUM_STORIES_DESC', 'STREET_HALF_NUM'}
     DELIMITER = '_'
 
     def __init__(self, name):
         """Initalize field name.
 
         Args:
-            name (str): field name 
+            name (str):
+                field name
         """
         self.name = name
         self.type = self.guess_type()
@@ -108,7 +109,7 @@ class FieldName:
             return BoolField()
         elif suffix in self.INT_SUFFIX or prefix in self.INT_SUFFIX:
             return IntField()
-        elif suffix in self.FLOAT_SUFFIX:
+        elif suffix in self.FLOAT_SUFFIX  or prefix in self.FLOAT_SUFFIX:
             return FloatField()
         elif suffix in self.DATE_SUFFIX:
             return DateField()

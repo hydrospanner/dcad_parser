@@ -29,12 +29,11 @@ class TableParser:
             self.rows = []
 
     def readlines(self):
-        """Generae each row of data."""
+        """Generae each normalized rows from file."""
         reader = csv.DictReader(self.parse_file)
         for row in reader:
+            row = {key.lower(): val for key, val in row.items()}
             row['line_num'] = reader.line_num
-            if reader.line_num % 4000 == 0:
-                break
             self.validate_row(row)
             yield row
 
