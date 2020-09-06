@@ -10,25 +10,18 @@ from ..fields import FieldName
 class TableParser:
     """Parse the csv files of table data."""
 
-    def __init__(self, parse_file, store_rows=False):
+    def __init__(self, parse_file):
         """Initalize parser.
 
         Args:
             parse_file (file-like object):
                 File to parse
-
-        Kwargs:
-            store_rows (bool):
-                Add the parsed rows to self.rows
         """
         self.parse_file = parse_file
         self.validator = None
         self.errors = {}
-        self.store_rows = store_rows
-        if store_rows:
-            self.rows = []
 
-    def readlines(self):
+    def read(self):
         """Generae each normalized rows from file."""
         reader = csv.DictReader(self.parse_file)
         for row in reader:
@@ -37,10 +30,19 @@ class TableParser:
             self.validate_row(row)
             yield row
 
-    def parse(self):
-        for row in self.readlines():
-            if self.store_rows:
-                self.rows.append(row)
+    def validate(self, max_row=None):
+        """Validate the file.
+
+        Any errors encountered are added to `self.errors`.
+
+        Kwargs:
+            max_row (int):
+                Stop validation after the line number is parsed.
+                Trades better performance for less validation.
+        """
+        for row in self.read():
+            if max_row is not None and row['line_num'] == max_row:
+                break
 
     def validate_row(self, row):
         if self.validator is None:

@@ -107,7 +107,7 @@ class FieldName:
             return StrField()
         if suffix in self.BOOL_SUFFIX:
             return BoolField()
-        elif suffix in self.INT_SUFFIX or prefix in self.INT_SUFFIX:
+        elif any([part in self.INT_SUFFIX for part in name_parts]):
             return IntField()
         elif suffix in self.FLOAT_SUFFIX  or prefix in self.FLOAT_SUFFIX:
             return FloatField()
