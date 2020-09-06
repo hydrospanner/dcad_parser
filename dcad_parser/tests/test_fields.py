@@ -14,7 +14,14 @@ class TableParserTests(unittest.TestCase):
             'sell_dt': DateField,
             'sell_val': FloatField,
             'comment': StrField,
+            'num_stories': IntField,
+            'num_stories_desc': StrField,
+            'pct_complete': FloatField,
+            'act_age': IntField,
         }
         for field_name, field_cls in fields.items():
             field = FieldName(field_name)
-            self.assertIsInstance(field.type, field_cls)
+            msg=(f'"{field_name}" parsed type is {str(field.type)}, expected '
+                 f'{field_cls}.')
+            self.assertIsInstance(field.type, field_cls,
+                                  msg=msg)

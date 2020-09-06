@@ -6,7 +6,7 @@ with open('README.rst', 'r') as file:
 
 setup(name='directory_to_sql',
       version='0.1.0',
-      description='Parse Dallas Central Appriasal District Dataset',
+      description='Parse and model Dallas Central Appriasal District Data',
       long_description=long_description,
       url='http://github.com/hydrospanner/dcad_parser',
       author='John Tucker',
