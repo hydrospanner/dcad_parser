@@ -21,11 +21,11 @@ class TableParserTests(unittest.TestCase):
                 [1, 2019, 99],
                 ]
         csv_file = self.create_csv(header, data)
-        parser = TableParser(csv_file, store_rows=True)
-        parser.parse()
-        self.assertTrue(parser.rows)
+        parser = TableParser(csv_file)
+        parsed_rows = list(parser.read())
+        self.assertTrue(parsed_rows)
         self.assertFalse(parser.errors)
-        for expected, parsed in zip(data, parser.rows):
+        for expected, parsed in zip(data, parsed_rows):
             for expected_val, col in zip(expected, header):
                 self.assertEqual(parsed[col], expected_val)
 
@@ -33,10 +33,20 @@ class TableParserTests(unittest.TestCase):
         header = ['txt_field', 'val']
         data = [['', '']]
         csv_file = self.create_csv(header, data)
-        parser = TableParser(csv_file, store_rows=True)
-        parser.parse()
-        self.assertTrue(parser.rows)
+        parser = TableParser(csv_file)
+        parsed_rows = list(parser.read())
+        self.assertTrue(parsed_rows)
         self.assertFalse(parser.errors)
-        parsed = parser.rows[0]
+        parsed = parsed_rows[0]
         self.assertEqual(parsed['txt_field'], '')
         self.assertIsNone(parsed['val'])
+
+    def test_validate(self):
+        header = ['tax_yr']
+        data = [[1999],
+                ['1-96'],
+                ]
+        csv_file = self.create_csv(header, data)
+        parser = TableParser(csv_file)
+        parser.validate(max_row=3)
+        self.assertTrue(parser.errors)

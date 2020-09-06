@@ -18,6 +18,7 @@ class TableParserTests(unittest.TestCase):
             'num_stories_desc': StrField,
             'pct_complete': FloatField,
             'act_age': IntField,
+            'eff_yr_built': IntField,
         }
         for field_name, field_cls in fields.items():
             field = FieldName(field_name)
