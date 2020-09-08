@@ -41,7 +41,7 @@ class TableParser:
                 Trades better performance for less validation.
         """
         for row in self.read():
-            if max_row is not None and row['line_num'] == max_row:
+            if max_row is not None and row['line_num'] >= max_row:
                 break
 
     def validate_row(self, row):

@@ -41,6 +41,16 @@ class TableParserTests(unittest.TestCase):
         self.assertEqual(parsed['txt_field'], '')
         self.assertIsNone(parsed['val'])
 
+    def test_coerce_date(self):
+        header = ['build_dt']
+        data = [['01/01/2020'],
+                [''],
+                ]
+        csv_file = self.create_csv(header, data)
+        parser = TableParser(csv_file)
+        parser.validate()
+        self.assertFalse(parser.errors)
+
     def test_validate(self):
         header = ['tax_yr']
         data = [[1999],
