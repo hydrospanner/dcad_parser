@@ -60,3 +60,14 @@ class TableParserTests(unittest.TestCase):
         parser = TableParser(csv_file)
         parser.validate(max_row=3)
         self.assertTrue(parser.errors)
+
+    def test_str_maxlength(self):
+        header = ['tax_cd']
+        data = [['-' * 10_000],
+                ['14X80 79 CENTURIAN S#747514T3BB76'],
+                ]
+        csv_file = self.create_csv(header, data)
+        parser = TableParser(csv_file)
+        parser.validate()
+        self.assertTrue(parser.errors)
+        self.assertEqual(len(data), len(parser.errors))

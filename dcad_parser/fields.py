@@ -84,7 +84,7 @@ class FieldName:
     # Exceptions to suffix conventions
     str_fields = {'ACCOUNT_NUM', 'GIS_PARCEL_ID', 'BLDG_ID', 'UNIT_ID',
                   'TAX_OBJ_ID', 'NUM_STORIES_DESC', 'STREET_HALF_NUM',
-                  'AREA_UOM_DESC', 'MBL_HOME_SER_NUM'}
+                  'AREA_UOM_DESC', 'MBL_HOME_SER_NUM', 'PHONE_NUM'}
     long_str_parts = ['NAME', 'REP', 'LEGAL', 'ADDRESS', 'DESC', 'CITY']
     long_str_names = ['BLDG_CLASS_CD', 'P_BUS_TYP_CD', 'MBL_HOME_MANUFCTR']
     DELIMITER = '_'

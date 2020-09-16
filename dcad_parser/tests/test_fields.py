@@ -23,7 +23,12 @@ class TableParserTests(unittest.TestCase):
         }
         for field_name, field_cls in fields.items():
             field = FieldName(field_name)
-            msg=(f'"{field_name}" parsed type is {str(field.type)}, expected '
-                 f'{field_cls}.')
+            msg = (f'"{field_name}" parsed type is {str(field.type)}, expected'
+                   f' {field_cls}.')
             self.assertIsInstance(field.type, field_cls,
                                   msg=msg)
+
+    def test_str_schema(self):
+        # Test maxlength is set
+        field = FieldName('hello_cd')
+        self.assertTrue('maxlength' in field.schema)
