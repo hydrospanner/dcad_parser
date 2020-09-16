@@ -1,6 +1,6 @@
 """Parse table names and fields from data dictionary file.
 
-File is contains non-UTF-8 characters and has inconsistant syntax between lines.
+File contains non-UTF-8 characters and has inconsistant syntax between lines.
 """
 import os
 import re
