@@ -43,7 +43,7 @@ into::
 
 Example (using the entery point)::
 
-    generate_sqlalchemy path/to/file.txt --outfile output/file.py
+    generate_sqlalchemy path/to/file.txt --outfile models.py --flask
 
 To see the full list of options::
 
