@@ -1,6 +1,9 @@
 Dallas Central Appraisal District Parser
 ========================================
 
+.. image:: https://travis-ci.com/hydrospanner/dcad_parser.svg?branch=master
+    :target: https://travis-ci.com/hydrospanner/dcad_parser
+
 This repo provides tools for fast DB integration of data from the
 Dallas Central Appraisal District (DCAD). This includes
 
