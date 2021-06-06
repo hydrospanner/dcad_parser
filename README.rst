@@ -25,9 +25,10 @@ This will convert this data dictionary structure::
             [ACCOUNT_NUM]                   The DCAD Account number
             [APPRAISAL_YR]                  The appraisal year for the data
             [TOT_VAL]                       The total value for the property
-    ...
 
-into::
+into
+
+.. code-block:: python
 
     from flask_sqlalchemy import SQLAlchemy
     
@@ -42,13 +43,16 @@ into::
         account_num = db.Column(db.Integer, primary_key=True, nullable=False, info='The DCAD Account number')
         appraisal_yr = db.Column(db.Integer, primary_key=True, nullable=False, info='The appraisal year for the data')
         tot_val = db.Column(db.Float, info='The total value for the property')
-    ...
 
-Example (using the entery point)::
+Example (using the entery point)
+
+.. code-block:: bash
 
     generate_sqlalchemy path/to/file.txt --outfile models.py --flask
 
-To see the full list of options::
+To see the full list of options
+
+.. code-block:: bash
 
     generate_sqlalchemy --help
 
