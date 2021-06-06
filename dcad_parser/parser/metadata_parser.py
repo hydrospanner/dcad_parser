@@ -2,13 +2,10 @@
 
 File contains non-UTF-8 characters and has inconsistant syntax between lines.
 """
-import os
 import re
 import string
-from datetime import datetime
 
 from sqlalchemy import Column, Table, MetaData
-from sqlacodegen.codegen import CodeGenerator
 
 from ..fields import FieldName
 

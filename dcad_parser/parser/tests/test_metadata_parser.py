@@ -45,4 +45,3 @@ class TableParserTests(unittest.TestCase):
         table_file.seek(0)
         with self.assertRaises(ValueError):
             DcadTablesParser(table_file)
-

@@ -1,6 +1,6 @@
 """Data structures for field name metadata and coercion."""
 from datetime import datetime
-from sqlalchemy import BOOLEAN, FLOAT, INTEGER, TEXT, DATE, String
+from sqlalchemy import BOOLEAN, FLOAT, INTEGER, DATE, String
 
 
 class FieldType:
@@ -115,7 +115,7 @@ class FieldName:
             return BoolField()
         elif any([part in self.INT_SUFFIX for part in name_parts]):
             return IntField()
-        elif suffix in self.FLOAT_SUFFIX  or prefix in self.FLOAT_SUFFIX:
+        elif suffix in self.FLOAT_SUFFIX or prefix in self.FLOAT_SUFFIX:
             return FloatField()
         elif suffix in self.DATE_SUFFIX:
             return DateField()
