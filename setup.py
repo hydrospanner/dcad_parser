@@ -1,4 +1,4 @@
-from setuptools import setup
+from setuptools import setup, find_packages
 
 
 with open('README.rst') as file:
@@ -23,7 +23,7 @@ setup(name='dcad-parser-hydrospanner',
         'Programming Language :: Python :: 3.8',
       ],
       license='MIT',
-      packages=['dcad_parser'],
+      packages=find_packages(),
       install_requires=[
             'flask-sqlacodegen',
             'cerberus',
