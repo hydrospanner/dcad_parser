@@ -1,13 +1,14 @@
 from setuptools import setup
 
 
-with open('README.rst', 'r') as file:
+with open('README.rst') as file:
     long_description = file.read()
 
-setup(name='directory_to_sql',
+setup(name='dcad-parser-hydrospanner',
       version='0.1.0',
-      description='Parse and model Dallas Central Appriasal District Data',
+      description='Parse and model Dallas Central Appriasal District data',
       long_description=long_description,
+      long_description_content_type='text/x-rst',
       url='http://github.com/hydrospanner/dcad_parser',
       author='John Tucker',
       classifiers=[
