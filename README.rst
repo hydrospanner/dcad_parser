@@ -62,3 +62,13 @@ Table Parser
 This parser functions as a dictionary parser for the invidual table exports.
 It also coerces and validates the data.
 It uses the same naming convention logic to identify field types as the Data Model process.
+
+
+Where to get it
+---------------
+[PyPI](https://pypi.org/project/dcad-parser-hydrospanner/)
+
+
+.. code-block:: bash
+
+  pip install dcad-parser-hydrospanner
